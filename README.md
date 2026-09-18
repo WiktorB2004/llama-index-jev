@@ -88,15 +88,15 @@ Tests mock `TypeSafeClient.system_one` / `AsyncTypeSafeClient.system_one`.
 No live API key is required.
 
 ```bash
-uv venv
-uv pip install -e "packages/llama-index-postprocessor-jev[dev]" \
-               -e "packages/llama-index-selectors-jev[dev]"
+uv sync
 
 # Run each package separately so test module names do not collide.
-.venv/bin/pytest --rootdir=packages/llama-index-postprocessor-jev \
+uv run pytest --rootdir=packages/llama-index-postprocessor-jev \
     packages/llama-index-postprocessor-jev
-.venv/bin/pytest --rootdir=packages/llama-index-selectors-jev \
+uv run pytest --rootdir=packages/llama-index-selectors-jev \
     packages/llama-index-selectors-jev
+
+uv run mypy
 ```
 
 ## Benchmark
