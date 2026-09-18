@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- GitHub community files: contributing guide, code of conduct, security policy, issue and PR templates
+
 ## 0.1.1
 
 Packaging and PyPI metadata only — no API changes.

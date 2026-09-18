@@ -46,6 +46,9 @@ nav:
   - Examples: examples.md
   - Benchmark: benchmark.md
   - Development: development.md
+  - Community:
+      - Contributing: contributing.md
+      - Security: security.md
   - Changelog: changelog.md
 
 plugins:
@@ -98,6 +101,8 @@ watch:
   - packages/llama-index-selectors-jev/llama_index
   - README.md
   - CHANGELOG.md
+  - CONTRIBUTING.md
+  - SECURITY.md
 
 validation:
   omitted_files: warn
