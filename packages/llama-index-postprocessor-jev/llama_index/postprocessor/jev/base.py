@@ -83,6 +83,14 @@ class JevRerank(BaseNodePostprocessor):
     _async_client: Any = PrivateAttr()
 
     def __init__(self, api_key: str | None = None, **kwargs: Any) -> None:
+        """Create a Jev reranker.
+
+        Args:
+            api_key: TypeSafe or OpenRouter key. Falls back to
+                ``TYPESAFE_API_KEY`` or ``OPENROUTER_API_KEY`` based on
+                ``provider``.
+            **kwargs: Fields such as ``provider``, ``top_n``, and ``mode``.
+        """
         super().__init__(**kwargs)
         api_key = resolve_api_key(api_key, provider=self.provider)
         self._client, self._async_client = make_clients(

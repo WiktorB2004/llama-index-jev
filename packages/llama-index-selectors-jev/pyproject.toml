@@ -38,7 +38,7 @@ dependencies = [
 Homepage = "https://github.com/WiktorB2004/llama-index-jev"
 Repository = "https://github.com/WiktorB2004/llama-index-jev"
 Issues = "https://github.com/WiktorB2004/llama-index-jev/issues"
-Documentation = "https://github.com/WiktorB2004/llama-index-jev#readme"
+Documentation = "https://wiktorb2004.github.io/llama-index-jev/"
 Changelog = "https://github.com/WiktorB2004/llama-index-jev/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]

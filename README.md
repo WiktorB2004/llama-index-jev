@@ -5,6 +5,7 @@ Drop-in LlamaIndex **reranker** and **router** powered by [TypeSafe Jev](https:/
 [![PyPI - postprocessor](https://img.shields.io/pypi/v/llama-index-postprocessor-jev?label=postprocessor)](https://pypi.org/project/llama-index-postprocessor-jev/)
 [![PyPI - selectors](https://img.shields.io/pypi/v/llama-index-selectors-jev?label=selectors)](https://pypi.org/project/llama-index-selectors-jev/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://pypi.org/project/llama-index-postprocessor-jev/)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://wiktorb2004.github.io/llama-index-jev/)
 [![CI](https://img.shields.io/github/actions/workflow/status/WiktorB2004/llama-index-jev/ci.yml?branch=main&label=CI)](https://github.com/WiktorB2004/llama-index-jev/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/github/license/WiktorB2004/llama-index-jev)](LICENSE)
 [![Downloads](https://img.shields.io/pypi/dm/llama-index-postprocessor-jev?label=postprocessor%20dl)](https://pypi.org/project/llama-index-postprocessor-jev/)
@@ -43,7 +44,7 @@ engine = RouterQueryEngine(
 )
 ```
 
-Paste-and-run walkthroughs (OpenRouter, mock embeddings / MockLLM so you do not need an OpenAI key): [`examples/`](examples/README.md).
+Docs: [wiktorb2004.github.io/llama-index-jev](https://wiktorb2004.github.io/llama-index-jev/). Paste-and-run walkthroughs (OpenRouter, mock embeddings / MockLLM so you do not need an OpenAI key): [`examples/`](examples/README.md).
 
 Package docs: [`JevRerank`](packages/llama-index-postprocessor-jev/README.md) · [`JevSingleSelector` / `JevMultiSelector`](packages/llama-index-selectors-jev/README.md).
 
@@ -107,6 +108,15 @@ uv run pytest --rootdir=packages/llama-index-selectors-jev \
 
 uv run mypy
 ```
+
+## Docs
+
+```bash
+uv sync --group docs
+uv run mkdocs serve
+```
+
+Published at [wiktorb2004.github.io/llama-index-jev](https://wiktorb2004.github.io/llama-index-jev/).
 
 ## Benchmark
 

@@ -74,6 +74,21 @@ class JevSingleSelector(_JevSelectorBase):
         timeout_s: float = 2.5,
         provider: str = "typesafe",
     ) -> None:
+        """Create a single-choice selector.
+
+        Args:
+            api_key: TypeSafe or OpenRouter key. Falls back to
+                ``TYPESAFE_API_KEY`` or ``OPENROUTER_API_KEY`` based on
+                ``provider``.
+            model: TypeSafe model id; remapped to ``~typesafe/...`` on
+                OpenRouter.
+            default_index: Selection index if Jev fails. If omitted,
+                failures raise.
+            confidence_threshold: Treat a Choice below this confidence as
+                failure (raise or ``default_index``).
+            timeout_s: HTTP timeout forwarded to the client.
+            provider: ``typesafe`` or ``openrouter``.
+        """
         super().__init__()
         self.provider = provider
         api_key = resolve_api_key(api_key, provider=provider)
@@ -181,6 +196,21 @@ class JevMultiSelector(_JevSelectorBase):
         timeout_s: float = 2.5,
         provider: str = "typesafe",
     ) -> None:
+        """Create a multi-choice selector.
+
+        Args:
+            api_key: TypeSafe or OpenRouter key. Falls back to
+                ``TYPESAFE_API_KEY`` or ``OPENROUTER_API_KEY`` based on
+                ``provider``.
+            model: TypeSafe model id; remapped to ``~typesafe/...`` on
+                OpenRouter.
+            threshold: Keep options whose Noul is strictly above this
+                value.
+            default_index: Selection index if the API call fails. Not used
+                when every Noul is at or below ``threshold``.
+            timeout_s: HTTP timeout forwarded to the client.
+            provider: ``typesafe`` or ``openrouter``.
+        """
         super().__init__()
         self.provider = provider
         api_key = resolve_api_key(api_key, provider=provider)

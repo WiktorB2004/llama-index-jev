@@ -22,3 +22,4 @@ htmlcov/
 benchmark/cache/
 benchmark/results/*.json
 benchmark/results/*.md
+/site
