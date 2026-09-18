@@ -102,8 +102,29 @@ uv run mypy
 
 ## Benchmark
 
-A methodology stub lives in [`benchmark/`](benchmark/). Results writeup:
-_coming soon_ (needs a live Jev key).
+Retrieval eval (MiniLM or BM25 vs `JevRerank` on BEIR nfcorpus / scifact) lives
+in [`benchmark/`](benchmark/). Needs `OPENROUTER_API_KEY` (or `TYPESAFE_API_KEY`)
+and `uv sync --group benchmark`.
+
+```bash
+# Smoke (~50 Jev calls)
+uv run python -m benchmark.run_benchmark --provider openrouter --queries 5
+
+# Usage protocol (full test split, MiniLM top-10, Jev score, top_n=5)
+uv run python -m benchmark.run_benchmark --preset usage --dataset nfcorpus
+uv run python -m benchmark.run_benchmark --preset usage --dataset scifact
+
+# Stronger first-stage (optional)
+uv run python -m benchmark.run_benchmark --preset usage --dataset nfcorpus \
+  --embed-model bge-small --timeout-s 30
+```
+
+On the MiniLM protocol, MiniLM + Jev (`mode="score"`) beat MiniLM alone:
+NFCorpus nDCG@5 **0.340 → 0.396** (Δ **+0.056**, 95% CI [0.042, 0.072]) and
+SciFact **0.629 → 0.715** (Δ **+0.086**, 95% CI [0.059, 0.113]). With
+BGE-small on NFCorpus the lift is smaller but still positive:
+**0.375 → 0.415** (Δ **+0.040**, 95% CI [0.026, 0.055]). Details in
+[`benchmark/README.md`](benchmark/README.md#results).
 
 ## License
 

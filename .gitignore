@@ -19,3 +19,6 @@ htmlcov/
 *.swp
 .DS_Store
 /dev
+benchmark/cache/
+benchmark/results/*.json
+benchmark/results/*.md

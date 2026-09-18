@@ -18,6 +18,12 @@ dev = [
     "pytest-mock",
     "ruff==0.16.8",
 ]
+benchmark = [
+    "ir-datasets>=0.5.9",
+    "numpy>=1.24",
+    "rank-bm25>=0.2.2",
+    "sentence-transformers>=3.0",
+]
 
 [tool.uv]
 package = false
@@ -31,6 +37,9 @@ members = [
 [tool.uv.sources]
 llama-index-postprocessor-jev = { workspace = true }
 llama-index-selectors-jev = { workspace = true }
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
 
 [tool.mypy]
 python_version = "3.10"
