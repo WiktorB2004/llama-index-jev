@@ -1,0 +1,37 @@
+[project]
+name = "llama-index-selectors-jev"
+version = "0.1.0"
+description = "TypeSafe Jev selector for LlamaIndex"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10,<4.0"
+authors = [{ name = "WiktorB2004" }]
+dependencies = [
+    "llama-index-core>=0.13.0,<0.15.0",
+    "typesafe-sdk>=0.6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-asyncio", "pytest-mock"]
+
+[tool.llamahub]
+contains_example = false
+import_path = "llama_index.selectors.jev"
+
+[tool.llamahub.class_authors]
+JevSingleSelector = "WiktorB2004"
+JevMultiSelector = "WiktorB2004"
+
+[tool.hatch.build.targets.sdist]
+include = ["llama_index/"]
+
+[tool.hatch.build.targets.wheel]
+include = ["llama_index/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
