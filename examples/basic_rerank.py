@@ -1,6 +1,6 @@
 """Rerank a handful of in-memory nodes with Jev.
 
-Requires a live TYPESAFE_API_KEY. The embedding model is a local mock so
+Requires a live OPENROUTER_API_KEY. The embedding model is a local mock so
 this file does not also need an OpenAI key; retrieval quality is not the
 point — the before/after ordering is.
 """
@@ -33,9 +33,9 @@ def main() -> None:
     for node in retrieved:
         print(f"  {node.score:.3f}  {node.node.get_content()[:80]}")
 
-    reranked = JevRerank(top_n=3, mode="score").postprocess_nodes(
-        retrieved, query_str=QUERY
-    )
+    reranked = JevRerank(
+        provider="openrouter", top_n=3, mode="score", timeout_s=30
+    ).postprocess_nodes(retrieved, query_str=QUERY)
 
     print("\nAfter JevRerank:")
     for node in reranked:

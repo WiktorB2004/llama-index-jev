@@ -1,6 +1,6 @@
 """Route a query with JevSingleSelector directly (no RouterQueryEngine).
 
-Requires a live TYPESAFE_API_KEY.
+Requires a live OPENROUTER_API_KEY.
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ def main() -> None:
         ),
     )
 
-    selector = JevSingleSelector()
+    selector = JevSingleSelector(provider="openrouter", timeout_s=30)
     result = selector.select(
         [weather_tool.metadata, docs_tool.metadata],
         QUERY,
