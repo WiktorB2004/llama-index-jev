@@ -1,11 +1,35 @@
 [project]
 name = "llama-index-postprocessor-jev"
 version = "0.1.0"
-description = "TypeSafe Jev reranker for LlamaIndex"
+description = "Drop-in LlamaIndex reranker powered by TypeSafe Jev (typed 0–3 scores)"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10,<4.0"
 authors = [{ name = "WiktorB2004" }]
+keywords = [
+    "llamaindex",
+    "llama-index",
+    "rerank",
+    "reranker",
+    "rag",
+    "typesafe",
+    "jev",
+    "postprocessor",
+    "retrieval",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 dependencies = [
     "llama-index-core>=0.13.0,<0.15.0",
     "typesafe-sdk>=0.6.0",
@@ -15,12 +39,14 @@ dependencies = [
 Homepage = "https://github.com/WiktorB2004/llama-index-jev"
 Repository = "https://github.com/WiktorB2004/llama-index-jev"
 Issues = "https://github.com/WiktorB2004/llama-index-jev/issues"
+Documentation = "https://github.com/WiktorB2004/llama-index-jev#readme"
+Changelog = "https://github.com/WiktorB2004/llama-index-jev/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = ["pytest", "pytest-asyncio", "pytest-mock"]
 
 [tool.llamahub]
-contains_example = false
+contains_example = true
 import_path = "llama_index.postprocessor.jev"
 
 [tool.llamahub.class_authors]
@@ -30,7 +56,7 @@ JevRerank = "WiktorB2004"
 include = ["llama_index/", "LICENSE"]
 
 [tool.hatch.build.targets.wheel]
-include = ["llama_index/"]
+packages = ["llama_index"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

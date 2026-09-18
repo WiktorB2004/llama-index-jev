@@ -1,6 +1,8 @@
 # llama-index-selectors-jev
 
-TypeSafe Jev selector for [LlamaIndex](https://www.llamaindex.ai).
+Drop-in `JevSingleSelector` / `JevMultiSelector` for [LlamaIndex](https://www.llamaindex.ai) routers: typed tool / query-engine choice with [TypeSafe Jev](https://typesafe.ai), without an LLM-as-judge.
+
+Full story, reranker package, and benchmark numbers: [llama-index-jev](https://github.com/WiktorB2004/llama-index-jev#readme).
 
 ```bash
 pip install llama-index-selectors-jev
@@ -39,8 +41,9 @@ engine = RouterQueryEngine(
 ```
 
 See [`examples/basic_selector.py`](https://github.com/WiktorB2004/llama-index-jev/blob/main/examples/basic_selector.py)
-and [`examples/router_query_engine.py`](https://github.com/WiktorB2004/llama-index-jev/blob/main/examples/router_query_engine.py).
-Running them needs a live `TYPESAFE_API_KEY`.
+and [`examples/router_query_engine.py`](https://github.com/WiktorB2004/llama-index-jev/blob/main/examples/router_query_engine.py)
+([examples README](https://github.com/WiktorB2004/llama-index-jev/blob/main/examples/README.md)).
+The checked-in walkthroughs use `provider="openrouter"` and need `OPENROUTER_API_KEY`.
 
 ## Design
 
