@@ -14,6 +14,7 @@ from llama_index.core.base.base_selector import (
 from llama_index.core.prompts.mixin import PromptDictType
 from llama_index.core.schema import QueryBundle
 from llama_index.core.tools.types import ToolMetadata
+from llama_index.selectors.jev.openrouter import make_clients
 from llama_index.selectors.jev.utils import (
     assign_choice_keys,
     build_noul_questions,
@@ -22,7 +23,6 @@ from llama_index.selectors.jev.utils import (
     get_answer,
     resolve_api_key,
 )
-from typesafe_sdk import AsyncTypeSafeClient, TypeSafeClient
 
 logger = logging.getLogger(__name__)
 
@@ -72,16 +72,17 @@ class JevSingleSelector(_JevSelectorBase):
         default_index: int | None = None,
         confidence_threshold: float | None = None,
         timeout_s: float = 2.5,
+        provider: str = "typesafe",
     ) -> None:
         super().__init__()
-        api_key = resolve_api_key(api_key)
+        self.provider = provider
+        api_key = resolve_api_key(api_key, provider=provider)
         self.model = model
         self.default_index = default_index
         self.confidence_threshold = confidence_threshold
         self.timeout_s = timeout_s
-        self._client = TypeSafeClient(api_key=api_key, model=model, timeout=timeout_s)
-        self._async_client = AsyncTypeSafeClient(
-            api_key=api_key, model=model, timeout=timeout_s
+        self._client, self._async_client = make_clients(
+            provider, api_key, model, timeout_s
         )
 
     @classmethod
@@ -138,23 +139,26 @@ class JevSingleSelector(_JevSelectorBase):
                 f"Jev returned choice '{selected}' which is not in "
                 f"{sorted(key_to_index)}"
             )
-        if (
-            self.confidence_threshold is not None
-            and answer.confidence < self.confidence_threshold
-        ):
-            raise ValueError(
-                "Jev choice confidence "
-                f"{answer.confidence:.2f} is below threshold "
-                f"{self.confidence_threshold:.2f}"
-            )
+        if self.confidence_threshold is not None:
+            if answer.confidence is None:
+                raise ValueError(
+                    "Jev choice is missing confidence while "
+                    f"confidence_threshold={self.confidence_threshold:.2f} is set"
+                )
+            if answer.confidence < self.confidence_threshold:
+                raise ValueError(
+                    "Jev choice confidence "
+                    f"{answer.confidence:.2f} is below threshold "
+                    f"{self.confidence_threshold:.2f}"
+                )
+        reason = f"Jev selected '{selected}'"
+        if answer.confidence is not None:
+            reason += f" (confidence={answer.confidence:.2f})"
         return SelectorResult(
             selections=[
                 SingleSelection(
                     index=key_to_index[selected],
-                    reason=(
-                        f"Jev selected '{selected}' "
-                        f"(confidence={answer.confidence:.2f})"
-                    ),
+                    reason=reason,
                 )
             ]
         )
@@ -175,16 +179,17 @@ class JevMultiSelector(_JevSelectorBase):
         threshold: float = 0.5,
         default_index: int | None = None,
         timeout_s: float = 2.5,
+        provider: str = "typesafe",
     ) -> None:
         super().__init__()
-        api_key = resolve_api_key(api_key)
+        self.provider = provider
+        api_key = resolve_api_key(api_key, provider=provider)
         self.model = model
         self.threshold = threshold
         self.default_index = default_index
         self.timeout_s = timeout_s
-        self._client = TypeSafeClient(api_key=api_key, model=model, timeout=timeout_s)
-        self._async_client = AsyncTypeSafeClient(
-            api_key=api_key, model=model, timeout=timeout_s
+        self._client, self._async_client = make_clients(
+            provider, api_key, model, timeout_s
         )
 
     @classmethod
@@ -222,7 +227,7 @@ class JevMultiSelector(_JevSelectorBase):
                 model=self.model,
             )
             for key in chunk:
-                merged[key] = float(get_answer(response, key, "noul").noul)
+                merged[key] = get_answer(response, key, "noul").noul
         return merged
 
     async def _acollect_nouls(
@@ -238,7 +243,7 @@ class JevMultiSelector(_JevSelectorBase):
                 model=self.model,
             )
             for key in chunk:
-                merged[key] = float(get_answer(response, key, "noul").noul)
+                merged[key] = get_answer(response, key, "noul").noul
         return merged
 
     def _selections_from_nouls(

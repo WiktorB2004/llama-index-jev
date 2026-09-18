@@ -14,7 +14,11 @@ from helpers import (
 )
 from llama_index.core.tools.types import ToolMetadata
 from llama_index.selectors.jev import JevMultiSelector, JevSingleSelector
-from llama_index.selectors.jev.utils import MAX_QUESTIONS_PER_CALL, chunk_questions
+from llama_index.selectors.jev.utils import (
+    MAX_QUESTIONS_PER_CALL,
+    chunk_questions,
+    get_answer,
+)
 from typesafe_sdk import AsyncTypeSafeClient, Choice, TypeSafeClient
 
 
@@ -190,3 +194,11 @@ async def test_async_multi_selector(mocker: Any) -> None:
         DEFAULT_CHOICES, query_bundle()
     )
     assert result.inds == [1, 2]
+
+
+def test_get_answer_rejects_invalid_choice() -> None:
+    from llama_index.core.bridge.pydantic import ValidationError
+
+    response = make_response(route=noul_answer(0.5))
+    with pytest.raises(ValidationError):
+        get_answer(response, "route", "choice")

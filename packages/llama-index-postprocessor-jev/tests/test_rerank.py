@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from types import SimpleNamespace
 from typing import Any
 from unittest.mock import AsyncMock
 
@@ -156,7 +157,17 @@ def test_class_name() -> None:
 def test_get_answer_falls_back_to_typed_map() -> None:
     answer = score_answer(1.5)
     response = type("Resp", (), {"scores": {"relevance": answer}})()
-    assert get_answer(response, "relevance", "score") is answer
+    parsed = get_answer(response, "relevance", "score")
+    assert parsed.score == pytest.approx(1.5)
+    assert parsed.confidence == pytest.approx(0.9)
+
+
+def test_get_answer_rejects_invalid_payload() -> None:
+    from llama_index.core.bridge.pydantic import ValidationError
+
+    response = make_response(relevance=SimpleNamespace(noul="not-a-float"))
+    with pytest.raises(ValidationError):
+        get_answer(response, "relevance", "noul")
 
 
 @pytest.mark.asyncio

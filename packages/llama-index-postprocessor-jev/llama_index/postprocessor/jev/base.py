@@ -16,12 +16,14 @@ from llama_index.core.instrumentation.events.rerank import (
 )
 from llama_index.core.postprocessor.types import BaseNodePostprocessor
 from llama_index.core.schema import MetadataMode, NodeWithScore, QueryBundle
+from llama_index.postprocessor.jev.openrouter import make_clients
 from llama_index.postprocessor.jev.utils import (
+    NoulAnswer,
+    ScoreAnswer,
     build_relevance_question,
     get_answer,
     resolve_api_key,
 )
-from typesafe_sdk import AsyncTypeSafeClient, TypeSafeClient
 
 logger = logging.getLogger(__name__)
 dispatcher = get_dispatcher(__name__)
@@ -35,9 +37,16 @@ class JevRerank(BaseNodePostprocessor):
     pick a winner among many passages whose question ids it cannot see.
     """
 
+    provider: Literal["typesafe", "openrouter"] = Field(
+        default="typesafe",
+        description=(
+            "typesafe: TypeSafe System One SDK. "
+            "openrouter: OpenRouter Decisions API (OPENROUTER_API_KEY)."
+        ),
+    )
     model: str = Field(
         default="jev-latest",
-        description="TypeSafe model id passed to the client and per call.",
+        description="TypeSafe model id; remapped to ~typesafe/... on OpenRouter.",
     )
     top_n: int = Field(
         default=5,
@@ -59,7 +68,7 @@ class JevRerank(BaseNodePostprocessor):
     )
     timeout_s: float = Field(
         default=2.5,
-        description="HTTP timeout in seconds, forwarded to TypeSafeClient.",
+        description="HTTP timeout in seconds, forwarded to the Jev client.",
     )
     raise_on_error: bool = Field(
         default=False,
@@ -70,17 +79,14 @@ class JevRerank(BaseNodePostprocessor):
         description="Maximum in-flight system_one calls.",
     )
 
-    _client: TypeSafeClient = PrivateAttr()
-    _async_client: AsyncTypeSafeClient = PrivateAttr()
+    _client: Any = PrivateAttr()
+    _async_client: Any = PrivateAttr()
 
     def __init__(self, api_key: str | None = None, **kwargs: Any) -> None:
-        api_key = resolve_api_key(api_key)
         super().__init__(**kwargs)
-        self._client = TypeSafeClient(
-            api_key=api_key, model=self.model, timeout=self.timeout_s
-        )
-        self._async_client = AsyncTypeSafeClient(
-            api_key=api_key, model=self.model, timeout=self.timeout_s
+        api_key = resolve_api_key(api_key, provider=self.provider)
+        self._client, self._async_client = make_clients(
+            self.provider, api_key, self.model, self.timeout_s
         )
 
     @classmethod
@@ -196,7 +202,7 @@ class JevRerank(BaseNodePostprocessor):
     ) -> list[NodeWithScore]:
         semaphore = asyncio.Semaphore(self.max_concurrency)
 
-        async def one(node: NodeWithScore) -> Any:
+        async def one(node: NodeWithScore) -> NoulAnswer | ScoreAnswer:
             async with semaphore:
                 return await self._ascore_one(node, query_str)
 
@@ -205,7 +211,9 @@ class JevRerank(BaseNodePostprocessor):
             self._apply_answer(node, answer) for node, answer in zip(nodes, answers)
         ]
 
-    def _score_one(self, node: NodeWithScore, query_str: str) -> Any:
+    def _score_one(
+        self, node: NodeWithScore, query_str: str
+    ) -> NoulAnswer | ScoreAnswer:
         response = self._client.system_one(
             state=self._state_for(node, query_str),
             questions={"relevance": build_relevance_question(self.mode)},
@@ -213,7 +221,9 @@ class JevRerank(BaseNodePostprocessor):
         )
         return get_answer(response, "relevance", self.mode)
 
-    async def _ascore_one(self, node: NodeWithScore, query_str: str) -> Any:
+    async def _ascore_one(
+        self, node: NodeWithScore, query_str: str
+    ) -> NoulAnswer | ScoreAnswer:
         response = await self._async_client.system_one(
             state=self._state_for(node, query_str),
             questions={"relevance": build_relevance_question(self.mode)},
@@ -227,16 +237,27 @@ class JevRerank(BaseNodePostprocessor):
             "passage": node.node.get_content(metadata_mode=MetadataMode.EMBED),
         }
 
-    def _apply_answer(self, node: NodeWithScore, answer: Any) -> NodeWithScore:
+    def _apply_answer(
+        self, node: NodeWithScore, answer: NoulAnswer | ScoreAnswer
+    ) -> NodeWithScore:
         node.node.metadata["retrieval_score"] = node.score
         if self.mode == "score":
+            if not isinstance(answer, ScoreAnswer):
+                raise TypeError(
+                    f"score mode expected ScoreAnswer, got {type(answer).__name__}"
+                )
             score = float(answer.score)
-            node.node.metadata["jev_confidence"] = answer.confidence
-            if (
-                self.confidence_threshold is not None
-                and answer.confidence < self.confidence_threshold
-            ):
-                node.node.metadata["jev_low_confidence"] = True
+            if answer.confidence is not None:
+                node.node.metadata["jev_confidence"] = answer.confidence
+                if (
+                    self.confidence_threshold is not None
+                    and answer.confidence < self.confidence_threshold
+                ):
+                    node.node.metadata["jev_low_confidence"] = True
         else:
+            if not isinstance(answer, NoulAnswer):
+                raise TypeError(
+                    f"noul mode expected NoulAnswer, got {type(answer).__name__}"
+                )
             score = float(answer.noul)
         return NodeWithScore(node=node.node, score=score)
