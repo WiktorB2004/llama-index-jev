@@ -33,8 +33,8 @@ print(query_engine.query("Where is the Eiffel Tower?"))
 ```
 
 A standalone walkthrough is in
-[`examples/basic_rerank.py`](../../examples/basic_rerank.py). Running it
-needs a live `TYPESAFE_API_KEY`.
+[`examples/basic_rerank.py`](https://github.com/WiktorB2004/llama-index-jev/blob/main/examples/basic_rerank.py).
+Running it needs a live `TYPESAFE_API_KEY`.
 
 ## Design
 

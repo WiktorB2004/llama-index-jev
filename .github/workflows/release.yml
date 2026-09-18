@@ -1,0 +1,93 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+rc[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+[ab][0-9]+"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Build packages
+        run: |
+          uv build --package llama-index-postprocessor-jev --no-sources
+          uv build --package llama-index-selectors-jev --no-sources
+
+      - name: Smoke test wheels
+        run: |
+          uv run --isolated --no-project \
+            --with dist/llama_index_postprocessor_jev-*-py3-none-any.whl \
+            python -c "from llama_index.postprocessor.jev import JevRerank"
+          uv run --isolated --no-project \
+            --with dist/llama_index_selectors_jev-*-py3-none-any.whl \
+            python -c "from llama_index.selectors.jev import JevSingleSelector, JevMultiSelector"
+
+      - name: Smoke test sdists
+        run: |
+          uv run --isolated --no-project \
+            --with dist/llama_index_postprocessor_jev-*.tar.gz \
+            python -c "from llama_index.postprocessor.jev import JevRerank"
+          uv run --isolated --no-project \
+            --with dist/llama_index_selectors_jev-*.tar.gz \
+            python -c "from llama_index.selectors.jev import JevSingleSelector, JevMultiSelector"
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish-postprocessor:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/llama-index-postprocessor-jev/
+    permissions:
+      id-token: write
+    steps:
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Download distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish
+        run: uv publish dist/llama_index_postprocessor_jev-*
+
+  publish-selectors:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi-selectors
+      url: https://pypi.org/project/llama-index-selectors-jev/
+    permissions:
+      id-token: write
+    steps:
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Download distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish
+        run: uv publish dist/llama_index_selectors_jev-*
