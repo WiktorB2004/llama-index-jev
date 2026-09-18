@@ -73,8 +73,7 @@ def build_route_question(
     choices: Sequence[ToolMetadata], keys: Sequence[str]
 ) -> Choice:
     criteria = {
-        key: choice_description(choice, key)
-        for key, choice in zip(keys, choices)
+        key: choice_description(choice, key) for key, choice in zip(keys, choices)
     }
     return Choice(
         instructions="Which option best answers this query?",

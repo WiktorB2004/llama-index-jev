@@ -117,9 +117,9 @@ class JevRerank(BaseNodePostprocessor):
         ) as event:
             try:
                 scored = self._score_nodes(nodes, query_bundle.query_str)
-                reranked = sorted(
-                    scored, key=lambda n: n.score or 0.0, reverse=True
-                )[: self.top_n]
+                reranked = sorted(scored, key=lambda n: n.score or 0.0, reverse=True)[
+                    : self.top_n
+                ]
             except Exception:
                 if self.raise_on_error:
                     raise
@@ -163,9 +163,9 @@ class JevRerank(BaseNodePostprocessor):
         ) as event:
             try:
                 scored = await self._ascore_nodes(nodes, query_bundle.query_str)
-                reranked = sorted(
-                    scored, key=lambda n: n.score or 0.0, reverse=True
-                )[: self.top_n]
+                reranked = sorted(scored, key=lambda n: n.score or 0.0, reverse=True)[
+                    : self.top_n
+                ]
             except Exception:
                 if self.raise_on_error:
                     raise
@@ -185,13 +185,10 @@ class JevRerank(BaseNodePostprocessor):
         # Collect every answer first. A single failed call aborts the whole
         # pass so we never mix Jev scores with original retrieval scores.
         with ThreadPoolExecutor(max_workers=self.max_concurrency) as pool:
-            futures = [
-                pool.submit(self._score_one, node, query_str) for node in nodes
-            ]
+            futures = [pool.submit(self._score_one, node, query_str) for node in nodes]
             answers = [future.result() for future in futures]
         return [
-            self._apply_answer(node, answer)
-            for node, answer in zip(nodes, answers)
+            self._apply_answer(node, answer) for node, answer in zip(nodes, answers)
         ]
 
     async def _ascore_nodes(
@@ -205,8 +202,7 @@ class JevRerank(BaseNodePostprocessor):
 
         answers = await asyncio.gather(*[one(node) for node in nodes])
         return [
-            self._apply_answer(node, answer)
-            for node, answer in zip(nodes, answers)
+            self._apply_answer(node, answer) for node, answer in zip(nodes, answers)
         ]
 
     def _score_one(self, node: NodeWithScore, query_str: str) -> Any:
@@ -231,9 +227,7 @@ class JevRerank(BaseNodePostprocessor):
             "passage": node.node.get_content(metadata_mode=MetadataMode.EMBED),
         }
 
-    def _apply_answer(
-        self, node: NodeWithScore, answer: Any
-    ) -> NodeWithScore:
+    def _apply_answer(self, node: NodeWithScore, answer: Any) -> NodeWithScore:
         node.node.metadata["retrieval_score"] = node.score
         if self.mode == "score":
             score = float(answer.score)

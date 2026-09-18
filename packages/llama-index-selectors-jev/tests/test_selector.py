@@ -35,9 +35,7 @@ def test_single_selector_returns_index_and_reason(mocker: Any) -> None:
     criteria = questions["route"].criteria
     assert "weather" in criteria
     assert "option_0" not in criteria
-    assert mock.call_args.kwargs["state"] == {
-        "query": "What is the weather in Paris?"
-    }
+    assert mock.call_args.kwargs["state"] == {"query": "What is the weather in Paris?"}
 
 
 def test_single_selector_uses_unique_choice_names_as_keys(mocker: Any) -> None:
@@ -81,9 +79,7 @@ def test_multi_selector_returns_above_threshold_in_original_order(
             docs=noul_answer(0.7),
         ),
     )
-    result = JevMultiSelector(threshold=0.5).select(
-        DEFAULT_CHOICES, query_bundle()
-    )
+    result = JevMultiSelector(threshold=0.5).select(DEFAULT_CHOICES, query_bundle())
     assert result.inds == [0, 2]
     assert result.reasons == [
         "Jev noul=0.90 for 'weather'",
@@ -103,9 +99,7 @@ def test_multi_selector_empty_threshold_returns_highest_noul(
             docs=noul_answer(0.1),
         ),
     )
-    result = JevMultiSelector(threshold=0.5).select(
-        DEFAULT_CHOICES, query_bundle()
-    )
+    result = JevMultiSelector(threshold=0.5).select(DEFAULT_CHOICES, query_bundle())
     assert len(result.selections) == 1
     assert result.ind == 1
     assert result.reason == "Jev noul=0.40 for 'sports'"
@@ -121,9 +115,7 @@ def test_multi_selector_uses_strict_greater_than_threshold(mocker: Any) -> None:
             docs=noul_answer(0.1),
         ),
     )
-    result = JevMultiSelector(threshold=0.5).select(
-        DEFAULT_CHOICES, query_bundle()
-    )
+    result = JevMultiSelector(threshold=0.5).select(DEFAULT_CHOICES, query_bundle())
     assert result.inds == [1]
 
 
@@ -133,9 +125,7 @@ def test_multi_selector_chunks_questions_above_255(mocker: Any) -> None:
 
     def fake(state: dict[str, str], questions: dict[str, Any], **kwargs: Any) -> Any:
         assert len(questions) <= MAX_QUESTIONS_PER_CALL
-        return make_response(
-            **{key: noul_answer(0.9) for key in questions}
-        )
+        return make_response(**{key: noul_answer(0.9) for key in questions})
 
     mock = mocker.patch.object(TypeSafeClient, "system_one", side_effect=fake)
     result = JevMultiSelector(threshold=0.5).select(choices, query_bundle())
@@ -176,13 +166,9 @@ async def test_async_single_selector(mocker: Any) -> None:
     mocker.patch.object(
         AsyncTypeSafeClient,
         "system_one",
-        new=AsyncMock(
-            return_value=make_response(route=choice_answer("sports", 0.88))
-        ),
+        new=AsyncMock(return_value=make_response(route=choice_answer("sports", 0.88))),
     )
-    result = await JevSingleSelector().aselect(
-        DEFAULT_CHOICES, query_bundle()
-    )
+    result = await JevSingleSelector().aselect(DEFAULT_CHOICES, query_bundle())
     assert result.ind == 1
     assert result.reason == "Jev selected 'sports' (confidence=0.88)"
 
