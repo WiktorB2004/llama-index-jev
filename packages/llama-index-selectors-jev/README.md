@@ -38,8 +38,8 @@ engine = RouterQueryEngine(
 )
 ```
 
-See [`examples/basic_selector.py`](../../examples/basic_selector.py) and
-[`examples/router_query_engine.py`](../../examples/router_query_engine.py).
+See [`examples/basic_selector.py`](https://github.com/WiktorB2004/llama-index-jev/blob/main/examples/basic_selector.py)
+and [`examples/router_query_engine.py`](https://github.com/WiktorB2004/llama-index-jev/blob/main/examples/router_query_engine.py).
 Running them needs a live `TYPESAFE_API_KEY`.
 
 ## Design

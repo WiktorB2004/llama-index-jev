@@ -11,6 +11,11 @@ dependencies = [
     "typesafe-sdk>=0.6.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/WiktorB2004/llama-index-jev"
+Repository = "https://github.com/WiktorB2004/llama-index-jev"
+Issues = "https://github.com/WiktorB2004/llama-index-jev/issues"
+
 [project.optional-dependencies]
 dev = ["pytest", "pytest-asyncio", "pytest-mock"]
 
@@ -23,7 +28,7 @@ JevSingleSelector = "WiktorB2004"
 JevMultiSelector = "WiktorB2004"
 
 [tool.hatch.build.targets.sdist]
-include = ["llama_index/"]
+include = ["llama_index/", "LICENSE"]
 
 [tool.hatch.build.targets.wheel]
 include = ["llama_index/"]
