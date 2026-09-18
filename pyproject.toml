@@ -18,6 +18,10 @@ dev = [
     "pytest-mock",
     "ruff==0.16.8",
 ]
+docs = [
+    "mkdocs-material>=9.6",
+    "mkdocstrings[python]>=0.29",
+]
 benchmark = [
     "ir-datasets>=0.5.9",
     "numpy>=1.24",

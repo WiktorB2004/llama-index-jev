@@ -2,7 +2,7 @@
 
 Drop-in `JevSingleSelector` / `JevMultiSelector` for [LlamaIndex](https://www.llamaindex.ai) routers: typed tool / query-engine choice with [TypeSafe Jev](https://typesafe.ai), without an LLM-as-judge.
 
-Full story, reranker package, and benchmark numbers: [llama-index-jev](https://github.com/WiktorB2004/llama-index-jev#readme).
+Full story, reranker package, and benchmark numbers: [docs](https://wiktorb2004.github.io/llama-index-jev/) · [repo](https://github.com/WiktorB2004/llama-index-jev#readme).
 
 ```bash
 pip install llama-index-selectors-jev

@@ -1,0 +1,113 @@
+site_name: LlamaIndex Jev
+site_description: Drop-in LlamaIndex reranker and router powered by TypeSafe Jev
+site_url: https://wiktorb2004.github.io/llama-index-jev/
+repo_url: https://github.com/WiktorB2004/llama-index-jev
+repo_name: WiktorB2004/llama-index-jev
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2026 WiktorB2004 — MIT
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - content.code.copy
+    - content.action.edit
+    - search.highlight
+    - search.suggest
+    - toc.follow
+
+nav:
+  - Home: index.md
+  - Install: install.md
+  - Guides:
+      - Rerank: guides/rerank.md
+      - Select: guides/select.md
+      - Providers: guides/providers.md
+  - API:
+      - JevRerank: api/rerank.md
+      - Selectors: api/selectors.md
+  - Examples: examples.md
+  - Benchmark: benchmark.md
+  - Development: development.md
+  - Changelog: changelog.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths:
+            - packages/llama-index-postprocessor-jev
+            - packages/llama-index-selectors-jev
+          options:
+            docstring_style: google
+            members_order: source
+            merge_init_into_class: true
+            show_root_heading: false
+            show_source: true
+            show_signature_annotations: true
+            separate_signature: true
+            signature_crossrefs: false
+            inherited_members: false
+            show_bases: true
+            filters:
+              - "!^_"
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: [.]
+      check_paths: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+watch:
+  - packages/llama-index-postprocessor-jev/llama_index
+  - packages/llama-index-selectors-jev/llama_index
+  - README.md
+  - CHANGELOG.md
+
+validation:
+  omitted_files: warn
+  absolute_links: relative_to_docs
+  unrecognized_links: warn
+  anchors: warn
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/WiktorB2004/llama-index-jev
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/llama-index-postprocessor-jev/

@@ -2,7 +2,7 @@
 
 Drop-in `JevRerank` for [LlamaIndex](https://www.llamaindex.ai): score each retrieved passage with [TypeSafe Jev](https://typesafe.ai), keep the top `n`. Typed 0–3 scores, not a cross-encoder and not an LLM-as-judge loop.
 
-Full story, selector package, and benchmark numbers: [llama-index-jev](https://github.com/WiktorB2004/llama-index-jev#readme).
+Full story, selector package, and benchmark numbers: [docs](https://wiktorb2004.github.io/llama-index-jev/) · [repo](https://github.com/WiktorB2004/llama-index-jev#readme).
 
 ```bash
 pip install llama-index-postprocessor-jev
