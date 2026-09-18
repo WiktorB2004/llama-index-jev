@@ -41,7 +41,7 @@ Each retrieved node becomes its own `system_one` call:
 
 ```python
 state = {"query": query_str, "passage": passage_text}
-questions = {"relevance": Score(...) }  # or Noul(...)
+questions = {"relevance": Score(...)}  # or Noul(...)
 ```
 
 Jev's question ids are **invisible** to the model. If you stuff 50 passages

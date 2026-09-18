@@ -86,9 +86,7 @@ def test_score_mode_writes_confidence_metadata(mocker: Any) -> None:
         return make_response(relevance=score_answer(1.0, confidence=0.9))
 
     mocker.patch.object(TypeSafeClient, "system_one", side_effect=fake)
-    reranker = JevRerank(
-        top_n=2, mode="score", confidence_threshold=0.5
-    )
+    reranker = JevRerank(top_n=2, mode="score", confidence_threshold=0.5)
     result = reranker.postprocess_nodes(nodes, query_bundle=query_bundle())
     # Sorted by score: low conf (2.0) first, high conf (1.0) second.
     # confidence_threshold flags, it does not drop.
@@ -110,9 +108,7 @@ def test_noul_mode_does_not_write_confidence_metadata(mocker: Any) -> None:
         )
 
     mocker.patch.object(TypeSafeClient, "system_one", side_effect=fake)
-    reranker = JevRerank(
-        top_n=2, mode="noul", confidence_threshold=0.5
-    )
+    reranker = JevRerank(top_n=2, mode="noul", confidence_threshold=0.5)
     result = reranker.postprocess_nodes(nodes, query_bundle=query_bundle())
     for node in result:
         assert "jev_confidence" not in node.node.metadata
@@ -168,15 +164,17 @@ async def test_async_score_mode(mocker: Any) -> None:
     nodes = make_nodes(["b", "a"], scores=[0.9, 0.1])
     scores_by_passage = {"b": 0.5, "a": 3.0}
 
-    async def fake(state: dict[str, str], questions: dict[str, Any], **kwargs: Any) -> Any:
+    async def fake(
+        state: dict[str, str], questions: dict[str, Any], **kwargs: Any
+    ) -> Any:
         return make_response(
             relevance=score_answer(scores_by_passage[state["passage"]])
         )
 
-    mocker.patch.object(AsyncTypeSafeClient, "system_one", new=AsyncMock(side_effect=fake))
-    reranker = JevRerank(top_n=2, mode="score")
-    result = await reranker.apostprocess_nodes(
-        nodes, query_bundle=query_bundle()
+    mocker.patch.object(
+        AsyncTypeSafeClient, "system_one", new=AsyncMock(side_effect=fake)
     )
+    reranker = JevRerank(top_n=2, mode="score")
+    result = await reranker.apostprocess_nodes(nodes, query_bundle=query_bundle())
     assert [n.node.get_content() for n in result] == ["a", "b"]
     assert result[0].score == pytest.approx(3.0)

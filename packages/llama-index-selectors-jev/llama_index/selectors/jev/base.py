@@ -27,9 +27,7 @@ from typesafe_sdk import AsyncTypeSafeClient, TypeSafeClient
 logger = logging.getLogger(__name__)
 
 
-def _fallback_or_raise(
-    default_index: int | None, exc: BaseException
-) -> SelectorResult:
+def _fallback_or_raise(default_index: int | None, exc: BaseException) -> SelectorResult:
     if default_index is None:
         raise exc
     logger.warning(
@@ -81,9 +79,7 @@ class JevSingleSelector(_JevSelectorBase):
         self.default_index = default_index
         self.confidence_threshold = confidence_threshold
         self.timeout_s = timeout_s
-        self._client = TypeSafeClient(
-            api_key=api_key, model=model, timeout=timeout_s
-        )
+        self._client = TypeSafeClient(api_key=api_key, model=model, timeout=timeout_s)
         self._async_client = AsyncTypeSafeClient(
             api_key=api_key, model=model, timeout=timeout_s
         )
@@ -113,9 +109,7 @@ class JevSingleSelector(_JevSelectorBase):
         except Exception as exc:  # noqa: BLE001 - fail-closed on any Jev error
             return _fallback_or_raise(self.default_index, exc)
 
-    def _call_system_one(
-        self, choices: Sequence[ToolMetadata], query_str: str
-    ) -> Any:
+    def _call_system_one(self, choices: Sequence[ToolMetadata], query_str: str) -> Any:
         keys, _ = assign_choice_keys(choices)
         return self._client.system_one(
             state={"query": query_str},
@@ -188,9 +182,7 @@ class JevMultiSelector(_JevSelectorBase):
         self.threshold = threshold
         self.default_index = default_index
         self.timeout_s = timeout_s
-        self._client = TypeSafeClient(
-            api_key=api_key, model=model, timeout=timeout_s
-        )
+        self._client = TypeSafeClient(api_key=api_key, model=model, timeout=timeout_s)
         self._async_client = AsyncTypeSafeClient(
             api_key=api_key, model=model, timeout=timeout_s
         )

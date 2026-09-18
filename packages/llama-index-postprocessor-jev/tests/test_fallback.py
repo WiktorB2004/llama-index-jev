@@ -59,9 +59,7 @@ def test_single_failed_call_fail_opens_whole_pass(mocker: Any) -> None:
 
 def test_fail_open_never_returns_empty_on_error(mocker: Any) -> None:
     nodes = make_nodes(["a", "b"])
-    mocker.patch.object(
-        TypeSafeClient, "system_one", side_effect=RuntimeError("boom")
-    )
+    mocker.patch.object(TypeSafeClient, "system_one", side_effect=RuntimeError("boom"))
     result = JevRerank(top_n=5, raise_on_error=False).postprocess_nodes(
         nodes, query_bundle=query_bundle()
     )
