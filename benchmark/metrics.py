@@ -1,8 +1,9 @@
-"""nDCG, latency percentiles, and OpenRouter usage totals."""
+"""nDCG, latency percentiles, bootstrap CIs, and OpenRouter usage totals."""
 
 from __future__ import annotations
 
 import math
+import random
 from collections.abc import Mapping, Sequence
 from typing import Any
 
@@ -50,7 +51,12 @@ def percentile(values: Sequence[float], p: float) -> float | None:
 def parse_usage(raw: Any) -> dict[str, float]:
     """Pull input/output tokens and USD from an OpenRouter or SDK usage object."""
     if raw is None:
-        return {"input_tokens": 0.0, "output_tokens": 0.0, "cost_usd": 0.0}
+        return {
+            "input_tokens": 0.0,
+            "output_tokens": 0.0,
+            "cost_usd": 0.0,
+            "cost_estimated": 0.0,
+        }
     if not isinstance(raw, Mapping):
         raw = {
             "input_tokens": getattr(raw, "input_tokens", None),
@@ -81,6 +87,45 @@ def parse_usage(raw: Any) -> dict[str, float]:
         "cost_usd": cost_usd,
         "cost_estimated": float(estimated),
     }
+
+
+def bootstrap_mean_ci(
+    values: Sequence[float],
+    *,
+    n_boot: int = 1000,
+    p: float = 0.95,
+    seed: int = 0,
+) -> tuple[float, float] | tuple[None, None]:
+    """Percentile bootstrap CI for the mean. Needs at least two observations."""
+    if len(values) < 2:
+        return None, None
+    rng = random.Random(seed)
+    n = len(values)
+    means: list[float] = []
+    for _ in range(n_boot):
+        sample = [values[rng.randrange(n)] for _ in range(n)]
+        means.append(sum(sample) / n)
+    means.sort()
+    alpha = (1.0 - p) / 2.0
+    low_index = math.floor(alpha * (n_boot - 1))
+    high_index = math.ceil((1.0 - alpha) * (n_boot - 1))
+    high_index = min(high_index, n_boot - 1)
+    return means[low_index], means[high_index]
+
+
+def bootstrap_delta_ci(
+    baseline: Sequence[float],
+    treatment: Sequence[float],
+    *,
+    n_boot: int = 1000,
+    p: float = 0.95,
+    seed: int = 0,
+) -> tuple[float, float] | tuple[None, None]:
+    """CI for mean(treatment - baseline) with paired query resampling."""
+    if len(baseline) != len(treatment):
+        raise ValueError("baseline and treatment must have the same length")
+    deltas = [t - b for t, b in zip(treatment, baseline)]
+    return bootstrap_mean_ci(deltas, n_boot=n_boot, p=p, seed=seed)
 
 
 def add_usage(total: dict[str, float], one: Mapping[str, float]) -> None:

@@ -38,7 +38,7 @@ def _query_text(query: object) -> str:
     raise ValueError(f"Query {query!r} has no text field")
 
 
-def load_split(name: str, n_queries: int) -> BenchmarkSplit:
+def load_split(name: str, n_queries: int | None) -> BenchmarkSplit:
     try:
         import ir_datasets
     except ImportError as exc:
@@ -70,12 +70,14 @@ def load_split(name: str, n_queries: int) -> BenchmarkSplit:
         if not qrels:
             continue
         selected.append(Query(query_id=query_id, text=_query_text(query), qrels=qrels))
-        if len(selected) >= n_queries:
+        if n_queries is not None and len(selected) >= n_queries:
             break
 
-    if len(selected) < n_queries:
+    if n_queries is not None and len(selected) < n_queries:
         raise RuntimeError(
             f"{dataset_id} only has {len(selected)} queries with qrels; "
             f"requested {n_queries}"
         )
+    if not selected:
+        raise RuntimeError(f"{dataset_id} has no queries with qrels")
     return BenchmarkSplit(name=name, docs=docs, queries=selected)

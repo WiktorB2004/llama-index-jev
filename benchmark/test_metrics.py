@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from benchmark.metrics import (
     JEV_INPUT_USD_PER_MILLION,
+    bootstrap_delta_ci,
+    bootstrap_mean_ci,
     dcg_at_k,
     mean,
     ndcg_at_k,
@@ -63,7 +65,34 @@ def test_parse_usage_estimates_from_jev_rate() -> None:
     assert parsed["cost_estimated"] == 1.0
 
 
+def test_parse_usage_none_has_cost_estimated() -> None:
+    parsed = parse_usage(None)
+    assert parsed["cost_usd"] == 0.0
+    assert parsed["cost_estimated"] == 0.0
+
+
 def test_parse_usage_reads_cached_cost_usd() -> None:
     parsed = parse_usage({"input_tokens": 10, "output_tokens": 1, "cost_usd": 0.0002})
     assert parsed["cost_usd"] == 0.0002
     assert parsed["cost_estimated"] == 0.0
+
+
+def test_bootstrap_ci_none_for_singleton() -> None:
+    assert bootstrap_mean_ci([1.0]) == (None, None)
+
+
+def test_bootstrap_ci_constant_series_is_tight() -> None:
+    low, high = bootstrap_mean_ci([0.5] * 20, n_boot=200, seed=0)
+    assert low is not None and high is not None
+    assert abs(low - 0.5) < 1e-9
+    assert abs(high - 0.5) < 1e-9
+
+
+def test_bootstrap_delta_positive_when_treatment_wins() -> None:
+    baseline = [0.1, 0.2, 0.3, 0.1, 0.2]
+    treatment = [0.4, 0.5, 0.6, 0.4, 0.5]
+    delta = mean(treatment) - mean(baseline)
+    low, high = bootstrap_delta_ci(baseline, treatment, n_boot=400, seed=1)
+    assert low is not None and high is not None
+    assert low > 0
+    assert low <= delta <= high

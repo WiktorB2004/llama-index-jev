@@ -20,7 +20,9 @@ dev = [
 ]
 benchmark = [
     "ir-datasets>=0.5.9",
+    "numpy>=1.24",
     "rank-bm25>=0.2.2",
+    "sentence-transformers>=3.0",
 ]
 
 [tool.uv]
