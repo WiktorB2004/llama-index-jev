@@ -1,0 +1,48 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "schedule": ["before 6am on monday"],
+  "osvVulnerabilityAlerts": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  },
+  "packageRules": [
+    {
+      "description": "Delay PyPI releases to reduce compromised-package risk",
+      "matchDatasources": ["pypi"],
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "groupName": "github-actions",
+      "matchManagers": ["github-actions"]
+    },
+    {
+      "groupName": "pre-commit hooks",
+      "matchManagers": ["pre-commit"]
+    },
+    {
+      "groupName": "ruff",
+      "matchPackageNames": ["ruff", "astral-sh/ruff-pre-commit"]
+    },
+    {
+      "groupName": "llama-index-core",
+      "matchPackageNames": ["llama-index-core"]
+    },
+    {
+      "groupName": "python patch and minor",
+      "matchDatasources": ["pypi"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "excludePackageNames": ["llama-index-core", "ruff"]
+    },
+    {
+      "description": "Automerge GitHub Action digest-only bumps after CI",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["digest", "pinDigest"],
+      "automerge": true
+    }
+  ]
+}

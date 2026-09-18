@@ -33,7 +33,11 @@ uv sync
 uv run pre-commit install
 ```
 
-`pre-commit` runs Ruff and mypy on commit. CI runs the same checks without it.
+`pre-commit` runs Ruff and mypy on commit. CI installs from `uv.lock` (`uv sync --frozen`) and runs the same checks without the hook.
+
+## Dependencies
+
+[Renovate](https://docs.renovatebot.com/) opens weekly grouped PRs for Python packages, GitHub Actions, and pre-commit pins. Do not add Dependabot version updates — the two bots would conflict. Dependabot **alerts** (GitHub Security) are fine.
 
 ## Tests
 
