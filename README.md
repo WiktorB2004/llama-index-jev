@@ -102,8 +102,13 @@ uv run mypy
 
 ## Benchmark
 
-A methodology stub lives in [`benchmark/`](benchmark/). Results writeup:
-_coming soon_ (needs a live Jev key).
+Smoke retrieval eval (BM25 vs `JevRerank` on a 5-query BEIR slice) lives in
+[`benchmark/`](benchmark/). It needs a live `OPENROUTER_API_KEY` (or
+`TYPESAFE_API_KEY`) and `uv sync --group benchmark`.
+
+```bash
+uv run python -m benchmark.run_benchmark --provider openrouter --queries 5
+```
 
 ## License
 
