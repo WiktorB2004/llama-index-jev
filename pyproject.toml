@@ -1,0 +1,69 @@
+[project]
+name = "llama-index-jev"
+version = "0.1.0"
+description = "Workspace root for LlamaIndex Jev integrations"
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "llama-index-postprocessor-jev",
+    "llama-index-selectors-jev",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.14",
+    "pre-commit>=4.0",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-mock",
+    "ruff==0.16.8",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = [
+    "packages/llama-index-postprocessor-jev",
+    "packages/llama-index-selectors-jev",
+]
+
+[tool.uv.sources]
+llama-index-postprocessor-jev = { workspace = true }
+llama-index-selectors-jev = { workspace = true }
+
+[tool.mypy]
+python_version = "3.10"
+files = [
+    "packages/llama-index-postprocessor-jev/llama_index",
+    "packages/llama-index-selectors-jev/llama_index",
+]
+mypy_path = [
+    "packages/llama-index-postprocessor-jev",
+    "packages/llama-index-selectors-jev",
+]
+namespace_packages = true
+explicit_package_bases = true
+strict = true
+# LlamaIndex bases are untyped once we skip llama_index.core.
+disallow_subclassing_any = false
+warn_unreachable = true
+show_error_codes = true
+
+# llama-index-core is installed, so ignore_missing_imports does not apply.
+# Following it pulls NumPy stubs that require Python 3.12+ syntax.
+[[tool.mypy.overrides]]
+module = [
+    "llama_index.core",
+    "llama_index.core.*",
+]
+follow_imports = "skip"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "typesafe_sdk",
+    "typesafe_sdk.*",
+]
+follow_imports = "skip"
+ignore_missing_imports = true
