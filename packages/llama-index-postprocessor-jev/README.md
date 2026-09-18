@@ -1,6 +1,8 @@
 # llama-index-postprocessor-jev
 
-TypeSafe Jev reranker for [LlamaIndex](https://www.llamaindex.ai).
+Drop-in `JevRerank` for [LlamaIndex](https://www.llamaindex.ai): score each retrieved passage with [TypeSafe Jev](https://typesafe.ai), keep the top `n`. Typed 0–3 scores, not a cross-encoder and not an LLM-as-judge loop.
+
+Full story, selector package, and benchmark numbers: [llama-index-jev](https://github.com/WiktorB2004/llama-index-jev#readme).
 
 ```bash
 pip install llama-index-postprocessor-jev
@@ -33,8 +35,9 @@ print(query_engine.query("Where is the Eiffel Tower?"))
 ```
 
 A standalone walkthrough is in
-[`examples/basic_rerank.py`](https://github.com/WiktorB2004/llama-index-jev/blob/main/examples/basic_rerank.py).
-Running it needs a live `TYPESAFE_API_KEY`.
+[`examples/basic_rerank.py`](https://github.com/WiktorB2004/llama-index-jev/blob/main/examples/basic_rerank.py)
+([examples README](https://github.com/WiktorB2004/llama-index-jev/blob/main/examples/README.md)).
+The checked-in walkthrough uses `provider="openrouter"` and needs `OPENROUTER_API_KEY`.
 
 ## Design
 

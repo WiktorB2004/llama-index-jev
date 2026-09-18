@@ -1,35 +1,27 @@
 # LlamaIndex + TypeSafe Jev
 
-Community integrations that plug [TypeSafe AI](https://typesafe.ai)'s Jev
-decision model into [LlamaIndex](https://www.llamaindex.ai) as:
+Drop-in LlamaIndex **reranker** and **router** powered by [TypeSafe Jev](https://typesafe.ai): typed `Score` / `Choice` answers, cheap compared to LLM-as-judge — not a Cohere or FlagEmbedding cross-encoder.
 
-1. a **reranker** (`llama-index-postprocessor-jev`) - score each retrieved
-   passage independently, then keep the top `n`
-2. a **selector** (`llama-index-selectors-jev`) - pick which query engine /
-   tool should handle a query
+[![PyPI - postprocessor](https://img.shields.io/pypi/v/llama-index-postprocessor-jev?label=postprocessor)](https://pypi.org/project/llama-index-postprocessor-jev/)
+[![PyPI - selectors](https://img.shields.io/pypi/v/llama-index-selectors-jev?label=selectors)](https://pypi.org/project/llama-index-selectors-jev/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://pypi.org/project/llama-index-postprocessor-jev/)
+[![CI](https://img.shields.io/github/actions/workflow/status/WiktorB2004/llama-index-jev/ci.yml?branch=main&label=CI)](https://github.com/WiktorB2004/llama-index-jev/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/WiktorB2004/llama-index-jev)](LICENSE)
+[![Downloads](https://img.shields.io/pypi/dm/llama-index-postprocessor-jev?label=postprocessor%20dl)](https://pypi.org/project/llama-index-postprocessor-jev/)
 
-This is an independent community project. It is **not** officially affiliated
-with TypeSafe or LlamaIndex.
+Independent community project. **Not** affiliated with TypeSafe or LlamaIndex.
 
-## Why two packages
-
-LlamaIndex has two different extension points:
-
-- `BaseNodePostprocessor` sits _after retrieval_. It reorders `NodeWithScore`
-  objects.
-- `BaseSelector` sits _before calling a tool_. It returns one or more
-  `SingleSelection` indices.
-
-Those are separately publishable integration families
-(`llama-index-postprocessor-*` and `llama-index-selectors-*`), so this repo
-ships two independently installable packages that happen to share a vendor.
-
-## Quickstart - rerank
+## Install
 
 ```bash
-pip install llama-index-postprocessor-jev
-export TYPESAFE_API_KEY=...
+pip install llama-index-postprocessor-jev   # JevRerank
+pip install llama-index-selectors-jev       # JevSingleSelector, JevMultiSelector
+export TYPESAFE_API_KEY=...                 # or OPENROUTER_API_KEY + provider="openrouter"
 ```
+
+## Quickstart
+
+**Rerank** — score each retrieved passage, keep the top `n`:
 
 ```python
 from llama_index.postprocessor.jev import JevRerank
@@ -39,15 +31,7 @@ reranker = JevRerank(top_n=5, mode="score")
 query_engine = index.as_query_engine(node_postprocessors=[reranker])
 ```
 
-See [`packages/llama-index-postprocessor-jev/README.md`](packages/llama-index-postprocessor-jev/README.md)
-and [`examples/basic_rerank.py`](examples/basic_rerank.py).
-
-## Quickstart - select
-
-```bash
-pip install llama-index-selectors-jev
-export TYPESAFE_API_KEY=...
-```
+**Select** — pick which query engine / tool handles the query:
 
 ```python
 from llama_index.core.query_engine import RouterQueryEngine
@@ -59,34 +43,58 @@ engine = RouterQueryEngine(
 )
 ```
 
-See [`packages/llama-index-selectors-jev/README.md`](packages/llama-index-selectors-jev/README.md),
-[`examples/basic_selector.py`](examples/basic_selector.py), and
-[`examples/router_query_engine.py`](examples/router_query_engine.py).
+Paste-and-run walkthroughs (OpenRouter, mock embeddings / MockLLM so you do not need an OpenAI key): [`examples/`](examples/README.md).
 
-## Design in one paragraph
+Package docs: [`JevRerank`](packages/llama-index-postprocessor-jev/README.md) · [`JevSingleSelector` / `JevMultiSelector`](packages/llama-index-selectors-jev/README.md).
 
-Jev is a System One model: you send a small `state` and a map of typed
-questions (`Noul` / `Choice` / `Score`) and get typed answers back. Rerank
-asks one relevance question **per passage** (state is `{query, passage}`
-only) because stuffing many passages into one prompt causes context rot and
-Jev cannot see question ids. Select may batch: a router only has the query
-as state, so one `Choice` (single) or one `Noul` per option (multi) in a
-single request is the right shape. Rerank **fails open** (keep original
-retrieval order) because a slightly-worse ranking is better than no context.
-Select **fails closed** (raise or a declared `default_index`) because the
-wrong tool is worse than an error.
+`mode="score"` is a **0–3** relevance rubric (off-topic → fully answers), not cosine similarity. Rerank **fails open** (keep retrieval order); select **fails closed** (raise, or a declared `default_index`).
 
-## Packages
+## Results
 
-| Package                         | Class                                   | LlamaIndex hook         |
-| ------------------------------- | --------------------------------------- | ----------------------- |
-| `llama-index-postprocessor-jev` | `JevRerank`                             | `BaseNodePostprocessor` |
-| `llama-index-selectors-jev`     | `JevSingleSelector`, `JevMultiSelector` | `BaseSelector`          |
+BEIR **nfcorpus** test, 323 queries. Protocol: MiniLM dense top-10, then `JevRerank(mode="score", top_n=5)`, OpenRouter `jev-latest`.
+
+| System | nDCG@5 |
+| --- | ---: |
+| BM25 | 0.298 |
+| MiniLM | 0.340 |
+| MiniLM + Jev | **0.396** |
+
+Δ nDCG@5 vs MiniLM: **+0.056** (95% CI 0.042–0.072, excludes 0). Cost ≈ **$0.096** for the split (≈ **$0.0003/query**).
+
+This is **not** a BEIR leaderboard vs Cohere: first-stage is MiniLM, not Pyserini. SciFact (same protocol, 300 queries): MiniLM 0.629 → MiniLM+Jev **0.715** (Δ **+0.086**, 95% CI 0.059–0.113). Details and BGE-small: [`benchmark/README.md`](benchmark/README.md).
+
+## Why Jev instead of Cohere / FlagEmbedding / an LLM
+
+Cross-encoders (Cohere, FlagEmbedding) are dedicated rerank models with a similarity score. An LLM-as-judge loop is flexible and expensive, and the answer is unstructured. Jev is a System One **decision** model: you send a small `state` and typed questions (`Score`, `Choice`, `Noul`) and get typed answers back. Same vendor covers both LlamaIndex hooks — rerank after retrieval, select before a tool call — at about $0.0003/query on this protocol.
+
+## Design
+
+### One call per passage
+
+Rerank asks one relevance question **per passage** (`state = {query, passage}` only). Stuffing many passages into one prompt causes context rot, and Jev cannot see question ids. TypeSafe's own rerank cookbook scores one pair at a time. Parallelism is `max_concurrency` (default 8).
+
+Select may batch: a router only has the query as state, so one `Choice` (single) or one `Noul` per option (multi) in a single request is the right shape.
+
+### Fail open vs fail closed
+
+Rerank **fails open**: if any Jev call in a pass errors, the original retrieval order is returned (truncated to `top_n`). A slightly-worse ranking is better than no context. Set `raise_on_error=True` to surface the error.
+
+Select **fails closed**: API errors, an out-of-set choice, or low confidence **raise**, unless you set `default_index`. The wrong tool is worse than an error.
+
+### Why two packages
+
+LlamaIndex has two extension points, published as two families:
+
+| Package | Class | Hook |
+| --- | --- | --- |
+| [`llama-index-postprocessor-jev`](packages/llama-index-postprocessor-jev/README.md) | `JevRerank` | `BaseNodePostprocessor` (after retrieval) |
+| [`llama-index-selectors-jev`](packages/llama-index-selectors-jev/README.md) | `JevSingleSelector`, `JevMultiSelector` | `BaseSelector` (before a tool call) |
+
+Install only the one you need.
 
 ## Tests
 
-Tests mock `TypeSafeClient.system_one` / `AsyncTypeSafeClient.system_one`.
-No live API key is required.
+Tests mock `TypeSafeClient.system_one` / `AsyncTypeSafeClient.system_one`. No live API key is required.
 
 ```bash
 uv sync
@@ -102,9 +110,7 @@ uv run mypy
 
 ## Benchmark
 
-Retrieval eval (MiniLM or BM25 vs `JevRerank` on BEIR nfcorpus / scifact) lives
-in [`benchmark/`](benchmark/). Needs `OPENROUTER_API_KEY` (or `TYPESAFE_API_KEY`)
-and `uv sync --group benchmark`.
+Retrieval eval lives in [`benchmark/`](benchmark/). Needs `OPENROUTER_API_KEY` (or `TYPESAFE_API_KEY`) and `uv sync --group benchmark`.
 
 ```bash
 # Smoke (~50 Jev calls)
@@ -113,19 +119,8 @@ uv run python -m benchmark.run_benchmark --provider openrouter --queries 5
 # Usage protocol (full test split, MiniLM top-10, Jev score, top_n=5)
 uv run python -m benchmark.run_benchmark --preset usage --dataset nfcorpus
 uv run python -m benchmark.run_benchmark --preset usage --dataset scifact
-
-# Stronger first-stage (optional)
-uv run python -m benchmark.run_benchmark --preset usage --dataset nfcorpus \
-  --embed-model bge-small --timeout-s 30
 ```
-
-On the MiniLM protocol, MiniLM + Jev (`mode="score"`) beat MiniLM alone:
-NFCorpus nDCG@5 **0.340 → 0.396** (Δ **+0.056**, 95% CI [0.042, 0.072]) and
-SciFact **0.629 → 0.715** (Δ **+0.086**, 95% CI [0.059, 0.113]). With
-BGE-small on NFCorpus the lift is smaller but still positive:
-**0.375 → 0.415** (Δ **+0.040**, 95% CI [0.026, 0.055]). Details in
-[`benchmark/README.md`](benchmark/README.md#results).
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE). Changelog: [CHANGELOG.md](CHANGELOG.md).
