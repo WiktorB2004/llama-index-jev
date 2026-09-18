@@ -1,6 +1,6 @@
 [project]
 name = "llama-index-jev"
-version = "0.1.0"
+version = "0.1.1"
 description = "Workspace root for LlamaIndex Jev integrations"
 readme = "README.md"
 requires-python = ">=3.10,<4.0"

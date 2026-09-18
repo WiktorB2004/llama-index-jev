@@ -1322,7 +1322,7 @@ wheels = [
 
 [[package]]
 name = "llama-index-jev"
-version = "0.1.0"
+version = "0.1.1"
 source = { virtual = "." }
 dependencies = [
     { name = "llama-index-postprocessor-jev" },
@@ -1371,7 +1371,7 @@ dev = [
 
 [[package]]
 name = "llama-index-postprocessor-jev"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "packages/llama-index-postprocessor-jev" }
 dependencies = [
     { name = "llama-index-core" },
@@ -1397,7 +1397,7 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "llama-index-selectors-jev"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "packages/llama-index-selectors-jev" }
 dependencies = [
     { name = "llama-index-core" },
