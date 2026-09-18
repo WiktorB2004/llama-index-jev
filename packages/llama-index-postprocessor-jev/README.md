@@ -5,6 +5,8 @@ TypeSafe Jev reranker for [LlamaIndex](https://www.llamaindex.ai).
 ```bash
 pip install llama-index-postprocessor-jev
 export TYPESAFE_API_KEY=...   # or pass api_key= to JevRerank
+# OpenRouter (optional): export OPENROUTER_API_KEY=... and
+# JevRerank(provider="openrouter")
 ```
 
 ## Usage
@@ -22,6 +24,7 @@ index = VectorStoreIndex.from_documents(
 )
 
 reranker = JevRerank(top_n=2, mode="score")
+# reranker = JevRerank(provider="openrouter", top_n=2, mode="score")
 query_engine = index.as_query_engine(
     similarity_top_k=5,
     node_postprocessors=[reranker],

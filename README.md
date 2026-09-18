@@ -35,6 +35,7 @@ export TYPESAFE_API_KEY=...
 from llama_index.postprocessor.jev import JevRerank
 
 reranker = JevRerank(top_n=5, mode="score")
+# OpenRouter: JevRerank(provider="openrouter", top_n=5, mode="score")
 query_engine = index.as_query_engine(node_postprocessors=[reranker])
 ```
 
