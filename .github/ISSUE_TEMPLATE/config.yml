@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://wiktorb2004.github.io/llama-index-jev/
+    about: Install, guides, API, and examples
+  - name: Security advisory
+    url: https://github.com/WiktorB2004/llama-index-jev/security/advisories/new
+    about: Report a vulnerability or leaked API key privately

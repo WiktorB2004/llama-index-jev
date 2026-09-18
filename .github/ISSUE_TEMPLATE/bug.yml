@@ -1,0 +1,56 @@
+name: Bug report
+description: Something does not work as documented
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues first. This tracker is for **llama-index-jev** only — not TypeSafe, LlamaIndex core, or OpenRouter.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      options:
+        - llama-index-postprocessor-jev (JevRerank)
+        - llama-index-selectors-jev (JevSingleSelector / JevMultiSelector)
+        - both / workspace
+        - docs / CI / other
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: "3.12"
+    validations:
+      required: true
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Provider
+      options:
+        - typesafe
+        - openrouter
+        - n/a (no API call)
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Minimal snippet or steps. Redact API keys.
+      render: python
+    validations:
+      required: true

@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using these metadata.
+type: software
+title: LlamaIndex Jev
+abstract: Drop-in LlamaIndex reranker and router powered by TypeSafe Jev.
+authors:
+  - family-names: Byrka
+    given-names: Wiktor
+    alias: WiktorB2004
+repository-code: https://github.com/WiktorB2004/llama-index-jev
+url: https://wiktorb2004.github.io/llama-index-jev/
+license: MIT
+version: "0.1.1"
+date-released: "2026-09-18"
+keywords:
+  - llamaindex
+  - rerank
+  - rag
+  - typesafe
+  - jev

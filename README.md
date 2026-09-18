@@ -131,6 +131,10 @@ uv run python -m benchmark.run_benchmark --preset usage --dataset nfcorpus
 uv run python -m benchmark.run_benchmark --preset usage --dataset scifact
 ```
 
+## Contributing
+
+Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). To report a vulnerability, use [SECURITY.md](SECURITY.md).
+
 ## License
 
-MIT. See [LICENSE](LICENSE). Changelog: [CHANGELOG.md](CHANGELOG.md).
+MIT. See [LICENSE](LICENSE). Changelog: [CHANGELOG.md](CHANGELOG.md). Cite this repo with [CITATION.cff](CITATION.cff).

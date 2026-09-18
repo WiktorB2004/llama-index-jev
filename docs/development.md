@@ -1,5 +1,7 @@
 # Development
 
+Contributor workflow (issues, PRs, changelog): [Contributing](contributing.md). Security reports: [Security](security.md).
+
 ```bash
 uv sync
 ```

@@ -1,0 +1,38 @@
+name: Feature request
+description: A change to this repo (not TypeSafe or LlamaIndex core)
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This tracker is for **llama-index-jev** only. TypeSafe API, LlamaIndex core, and OpenRouter requests belong upstream.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      options:
+        - llama-index-postprocessor-jev (JevRerank)
+        - llama-index-selectors-jev (JevSingleSelector / JevMultiSelector)
+        - both / workspace
+        - docs / examples / benchmark
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is hard or missing today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What should change in this repo?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: What did you consider instead?
