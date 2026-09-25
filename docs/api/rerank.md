@@ -4,8 +4,8 @@ LlamaIndex `BaseNodePostprocessor`. Score each retrieved node with one Jev call,
 
 | Field | Default | Notes |
 | --- | --- | --- |
-| `provider` | `"typesafe"` | `"typesafe"`, `"openrouter"`, or `"vercel"` |
-| `model` | `"jev-latest"` | OpenRouter: `~typesafe/...`. Vercel: bare ids become `typesafe-ai/jev` |
+| `provider` | `"typesafe"` | `"typesafe"`, `"openrouter"`, `"vercel"`, or `"cloudflare"` |
+| `model` | `"jev-latest"` | OpenRouter: `~typesafe/...`. Vercel: bare ids become `typesafe-ai/jev`. Cloudflare: `jev-latest` or `typesafe/jev` |
 | `top_n` | `5` | Nodes returned after sorting |
 | `mode` | `"score"` | `"score"` (0–3) or `"noul"` (0–1) |
 | `confidence_threshold` | `None` | Score mode: flags `jev_low_confidence`, does not drop |

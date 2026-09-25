@@ -6,8 +6,8 @@ LlamaIndex `BaseSelector`s. Single-route uses one `Choice`; multi-route uses one
 
 | Argument | Default | Notes |
 | --- | --- | --- |
-| `provider` | `"typesafe"` | `"typesafe"`, `"openrouter"`, or `"vercel"` |
-| `model` | `"jev-latest"` | OpenRouter: `~typesafe/...`. Vercel: bare ids become `typesafe-ai/jev` |
+| `provider` | `"typesafe"` | `"typesafe"`, `"openrouter"`, `"vercel"`, or `"cloudflare"` |
+| `model` | `"jev-latest"` | OpenRouter: `~typesafe/...`. Vercel: bare ids become `typesafe-ai/jev`. Cloudflare: `jev-latest` or `typesafe/jev` |
 | `default_index` | `None` | Fallback index if Jev fails; otherwise raise |
 | `confidence_threshold` | `None` | Low / missing confidence is failure |
 | `timeout_s` | `2.5` | HTTP timeout |
@@ -19,8 +19,8 @@ LlamaIndex `BaseSelector`s. Single-route uses one `Choice`; multi-route uses one
 
 | Argument | Default | Notes |
 | --- | --- | --- |
-| `provider` | `"typesafe"` | `"typesafe"`, `"openrouter"`, or `"vercel"` |
-| `model` | `"jev-latest"` | OpenRouter: `~typesafe/...`. Vercel: bare ids become `typesafe-ai/jev` |
+| `provider` | `"typesafe"` | `"typesafe"`, `"openrouter"`, `"vercel"`, or `"cloudflare"` |
+| `model` | `"jev-latest"` | OpenRouter: `~typesafe/...`. Vercel: bare ids become `typesafe-ai/jev`. Cloudflare: `jev-latest` or `typesafe/jev` |
 | `threshold` | `0.5` | Keep options with `noul > threshold` |
 | `default_index` | `None` | API-error fallback only, not empty-Noul |
 | `timeout_s` | `2.5` | HTTP timeout |

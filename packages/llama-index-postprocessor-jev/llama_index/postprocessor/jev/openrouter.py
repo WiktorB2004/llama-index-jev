@@ -10,6 +10,10 @@ from collections.abc import Mapping
 from types import SimpleNamespace
 from typing import Any
 
+from llama_index.postprocessor.jev.cloudflare import (
+    AsyncCloudflareClient,
+    CloudflareClient,
+)
 from llama_index.postprocessor.jev.vercel import AsyncVercelClient, VercelClient
 from typesafe_sdk import AsyncTypeSafeClient, TypeSafeClient
 
@@ -144,10 +148,13 @@ def make_clients(
             VercelClient(api_key=api_key, model=model, timeout=timeout_s),
             AsyncVercelClient(api_key=api_key, model=model, timeout=timeout_s),
         )
+    if provider == "cloudflare":
+        sync_cf = CloudflareClient(api_key=api_key, model=model, timeout=timeout_s)
+        return sync_cf, AsyncCloudflareClient(sync_cf)
     if provider != "typesafe":
         raise ValueError(
             f"Unknown provider {provider!r}; "
-            "expected 'typesafe', 'openrouter', or 'vercel'"
+            "expected 'typesafe', 'openrouter', 'vercel', or 'cloudflare'"
         )
     return (
         TypeSafeClient(api_key=api_key, model=model, timeout=timeout_s),
