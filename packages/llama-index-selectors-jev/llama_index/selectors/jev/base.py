@@ -77,17 +77,18 @@ class JevSingleSelector(_JevSelectorBase):
         """Create a single-choice selector.
 
         Args:
-            api_key: TypeSafe or OpenRouter key. Falls back to
-                ``TYPESAFE_API_KEY`` or ``OPENROUTER_API_KEY`` based on
-                ``provider``.
-            model: TypeSafe model id; remapped to ``~typesafe/...`` on
-                OpenRouter.
+            api_key: TypeSafe, OpenRouter, or Vercel AI Gateway key. Falls back to
+                ``TYPESAFE_API_KEY``, ``OPENROUTER_API_KEY``, or
+                ``AI_GATEWAY_API_KEY`` based on ``provider``.
+            model: TypeSafe model id. Remapped to ``~typesafe/...`` on
+                OpenRouter. On Vercel, an id with no ``/`` is sent as
+                ``typesafe-ai/jev``.
             default_index: Selection index if Jev fails. If omitted,
                 failures raise.
             confidence_threshold: Treat a Choice below this confidence as
                 failure (raise or ``default_index``).
             timeout_s: HTTP timeout forwarded to the client.
-            provider: ``typesafe`` or ``openrouter``.
+            provider: ``typesafe``, ``openrouter``, or ``vercel``.
         """
         super().__init__()
         self.provider = provider
@@ -199,17 +200,18 @@ class JevMultiSelector(_JevSelectorBase):
         """Create a multi-choice selector.
 
         Args:
-            api_key: TypeSafe or OpenRouter key. Falls back to
-                ``TYPESAFE_API_KEY`` or ``OPENROUTER_API_KEY`` based on
-                ``provider``.
-            model: TypeSafe model id; remapped to ``~typesafe/...`` on
-                OpenRouter.
+            api_key: TypeSafe, OpenRouter, or Vercel AI Gateway key. Falls back to
+                ``TYPESAFE_API_KEY``, ``OPENROUTER_API_KEY``, or
+                ``AI_GATEWAY_API_KEY`` based on ``provider``.
+            model: TypeSafe model id. Remapped to ``~typesafe/...`` on
+                OpenRouter. On Vercel, an id with no ``/`` is sent as
+                ``typesafe-ai/jev``.
             threshold: Keep options whose Noul is strictly above this
                 value.
             default_index: Selection index if the API call fails. Not used
                 when every Noul is at or below ``threshold``.
             timeout_s: HTTP timeout forwarded to the client.
-            provider: ``typesafe`` or ``openrouter``.
+            provider: ``typesafe``, ``openrouter``, or ``vercel``.
         """
         super().__init__()
         self.provider = provider

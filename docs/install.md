@@ -58,6 +58,17 @@ Default provider is TypeSafe. Pass a key, or set the matching env var.
     JevSingleSelector(provider="openrouter", api_key="...")
     ```
 
+=== "Vercel"
+
+    ```bash
+    export AI_GATEWAY_API_KEY=...
+    ```
+
+    ```python
+    JevRerank(provider="vercel")
+    JevSingleSelector(provider="vercel", api_key="...")
+    ```
+
 Missing keys raise `ValueError` at construction, not at query time. See [providers](guides/providers.md).
 
 ## LlamaIndex

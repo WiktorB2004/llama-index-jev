@@ -9,6 +9,8 @@ pip install llama-index-selectors-jev
 export TYPESAFE_API_KEY=...   # or pass api_key= to the selector
 # OpenRouter (optional): export OPENROUTER_API_KEY=... and
 # JevSingleSelector(provider="openrouter")
+# Vercel (optional): export AI_GATEWAY_API_KEY=... and
+# JevSingleSelector(provider="vercel")
 ```
 
 ## Usage

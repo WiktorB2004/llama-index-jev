@@ -37,16 +37,20 @@ class JevRerank(BaseNodePostprocessor):
     pick a winner among many passages whose question ids it cannot see.
     """
 
-    provider: Literal["typesafe", "openrouter"] = Field(
+    provider: Literal["typesafe", "openrouter", "vercel"] = Field(
         default="typesafe",
         description=(
             "typesafe: TypeSafe System One SDK. "
-            "openrouter: OpenRouter Decisions API (OPENROUTER_API_KEY)."
+            "openrouter: OpenRouter Decisions API (OPENROUTER_API_KEY). "
+            "vercel: Vercel AI Gateway TypeSafe API (AI_GATEWAY_API_KEY)."
         ),
     )
     model: str = Field(
         default="jev-latest",
-        description="TypeSafe model id; remapped to ~typesafe/... on OpenRouter.",
+        description=(
+            "TypeSafe model id. Remapped to ~typesafe/... on OpenRouter. "
+            "On Vercel, an id with no slash is sent as typesafe-ai/jev."
+        ),
     )
     top_n: int = Field(
         default=5,
@@ -86,9 +90,9 @@ class JevRerank(BaseNodePostprocessor):
         """Create a Jev reranker.
 
         Args:
-            api_key: TypeSafe or OpenRouter key. Falls back to
-                ``TYPESAFE_API_KEY`` or ``OPENROUTER_API_KEY`` based on
-                ``provider``.
+            api_key: TypeSafe, OpenRouter, or Vercel AI Gateway key. Falls back to
+                ``TYPESAFE_API_KEY``, ``OPENROUTER_API_KEY``, or
+                ``AI_GATEWAY_API_KEY`` based on ``provider``.
             **kwargs: Fields such as ``provider``, ``top_n``, and ``mode``.
         """
         super().__init__(**kwargs)

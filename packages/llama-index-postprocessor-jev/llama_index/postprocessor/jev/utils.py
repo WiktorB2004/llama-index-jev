@@ -68,9 +68,18 @@ def resolve_api_key(api_key: str | None = None, *, provider: str = "typesafe") -
                 "OPENROUTER_API_KEY environment variable."
             )
         return key
+    if provider == "vercel":
+        key = os.environ.get("AI_GATEWAY_API_KEY")
+        if not key:
+            raise ValueError(
+                "Vercel AI Gateway API key is missing. Pass api_key=... or set "
+                "the AI_GATEWAY_API_KEY environment variable."
+            )
+        return key
     if provider != "typesafe":
         raise ValueError(
-            f"Unknown provider {provider!r}; expected 'typesafe' or 'openrouter'"
+            f"Unknown provider {provider!r}; "
+            "expected 'typesafe', 'openrouter', or 'vercel'"
         )
     key = os.environ.get("TYPESAFE_API_KEY")
     if not key:

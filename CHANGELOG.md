@@ -3,6 +3,7 @@
 ## Unreleased
 
 - GitHub community files: contributing guide, code of conduct, security policy, issue and PR templates
+- `provider="vercel"` on `JevRerank`, `JevSingleSelector`, and `JevMultiSelector` (Vercel AI Gateway, `AI_GATEWAY_API_KEY`, model `typesafe-ai/jev`)
 
 ## 0.1.1
 
