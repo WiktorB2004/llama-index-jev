@@ -9,6 +9,8 @@ pip install llama-index-postprocessor-jev
 export TYPESAFE_API_KEY=...   # or pass api_key= to JevRerank
 # OpenRouter (optional): export OPENROUTER_API_KEY=... and
 # JevRerank(provider="openrouter")
+# Vercel (optional): export AI_GATEWAY_API_KEY=... and
+# JevRerank(provider="vercel")
 ```
 
 ## Usage

@@ -10,6 +10,7 @@ from collections.abc import Mapping
 from types import SimpleNamespace
 from typing import Any
 
+from llama_index.selectors.jev.vercel import AsyncVercelClient, VercelClient
 from typesafe_sdk import AsyncTypeSafeClient, TypeSafeClient
 
 DECISIONS_URL = "https://openrouter.ai/api/alpha/decisions"
@@ -138,9 +139,15 @@ def make_clients(
     if provider == "openrouter":
         sync = OpenRouterClient(api_key=api_key, model=model, timeout=timeout_s)
         return sync, AsyncOpenRouterClient(sync)
+    if provider == "vercel":
+        return (
+            VercelClient(api_key=api_key, model=model, timeout=timeout_s),
+            AsyncVercelClient(api_key=api_key, model=model, timeout=timeout_s),
+        )
     if provider != "typesafe":
         raise ValueError(
-            f"Unknown provider {provider!r}; expected 'typesafe' or 'openrouter'"
+            f"Unknown provider {provider!r}; "
+            "expected 'typesafe', 'openrouter', or 'vercel'"
         )
     return (
         TypeSafeClient(api_key=api_key, model=model, timeout=timeout_s),

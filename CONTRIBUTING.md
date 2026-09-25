@@ -84,8 +84,8 @@ User-facing changes get a bullet under `## Unreleased` in `CHANGELOG.md` (docs s
 ## Pull requests
 
 1. One concern per PR.
-2. Tests for behaviour changes. Keep the mock-client pattern; do not call TypeSafe or OpenRouter from unit tests.
+2. Tests for behaviour changes. Keep the mock-client pattern; do not call TypeSafe, OpenRouter, or Vercel from unit tests.
 3. Docs and changelog when the public API or documented protocol changes.
 4. Fill in the PR template.
 
-Do not commit `.env`, `TYPESAFE_API_KEY`, or `OPENROUTER_API_KEY`.
+Do not commit `.env`, `TYPESAFE_API_KEY`, `OPENROUTER_API_KEY`, or `AI_GATEWAY_API_KEY`.
