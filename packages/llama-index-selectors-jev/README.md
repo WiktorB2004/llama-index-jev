@@ -11,6 +11,8 @@ export TYPESAFE_API_KEY=...   # or pass api_key= to the selector
 # JevSingleSelector(provider="openrouter")
 # Vercel (optional): export AI_GATEWAY_API_KEY=... and
 # JevSingleSelector(provider="vercel")
+# Cloudflare (optional): export CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID
+# JevSingleSelector(provider="cloudflare")
 ```
 
 ## Usage

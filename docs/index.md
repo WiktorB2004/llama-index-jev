@@ -20,6 +20,7 @@ Independent community project. **Not** affiliated with TypeSafe or LlamaIndex.
     reranker = JevRerank(top_n=5, mode="score")
     # OpenRouter: JevRerank(provider="openrouter", top_n=5, mode="score")
     # Vercel:     JevRerank(provider="vercel", top_n=5, mode="score")
+    # Cloudflare: JevRerank(provider="cloudflare", top_n=5, mode="score")
     query_engine = index.as_query_engine(node_postprocessors=[reranker])
     ```
 

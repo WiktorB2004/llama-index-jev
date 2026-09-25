@@ -11,6 +11,8 @@ export TYPESAFE_API_KEY=...   # or pass api_key= to JevRerank
 # JevRerank(provider="openrouter")
 # Vercel (optional): export AI_GATEWAY_API_KEY=... and
 # JevRerank(provider="vercel")
+# Cloudflare (optional): export CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID
+# JevRerank(provider="cloudflare")
 ```
 
 ## Usage

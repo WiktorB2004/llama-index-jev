@@ -360,7 +360,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--provider",
-        choices=("openrouter", "typesafe", "vercel"),
+        choices=("openrouter", "typesafe", "vercel", "cloudflare"),
         default="openrouter",
     )
     parser.add_argument("--model", default="jev-latest")

@@ -44,7 +44,7 @@ Raw JSON is gitignored (`benchmark/results/*.json`). Numbers above are from
 
 ```bash
 uv sync --group benchmark
-export OPENROUTER_API_KEY=...   # typesafe: TYPESAFE_API_KEY; vercel: AI_GATEWAY_API_KEY
+export OPENROUTER_API_KEY=...   # typesafe: TYPESAFE_API_KEY; vercel: AI_GATEWAY_API_KEY; cloudflare: CLOUDFLARE_API_TOKEN
 ```
 
 `--preset usage` downloads the dense model on the first encode (MiniLM by

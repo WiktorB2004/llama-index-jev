@@ -69,6 +69,18 @@ Default provider is TypeSafe. Pass a key, or set the matching env var.
     JevSingleSelector(provider="vercel", api_key="...")
     ```
 
+=== "Cloudflare"
+
+    ```bash
+    export CLOUDFLARE_API_TOKEN=...
+    export CLOUDFLARE_ACCOUNT_ID=...
+    ```
+
+    ```python
+    JevRerank(provider="cloudflare")
+    JevSingleSelector(provider="cloudflare", api_key="...")
+    ```
+
 Missing keys raise `ValueError` at construction, not at query time. See [providers](guides/providers.md).
 
 ## LlamaIndex

@@ -22,4 +22,4 @@ You should hear back within a few days. If the report is accepted, a fix will la
 
 ## Secrets
 
-`.env` is gitignored. Never commit `TYPESAFE_API_KEY`, `OPENROUTER_API_KEY`, `AI_GATEWAY_API_KEY`, or other credentials. If a key was pushed, rotate it at the provider and report the leak privately as above.
+`.env` is gitignored. Never commit `TYPESAFE_API_KEY`, `OPENROUTER_API_KEY`, `AI_GATEWAY_API_KEY`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, or other credentials. If a key was pushed, rotate it at the provider and report the leak privately as above.

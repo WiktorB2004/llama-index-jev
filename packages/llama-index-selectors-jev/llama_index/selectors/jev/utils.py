@@ -72,10 +72,18 @@ def resolve_api_key(api_key: str | None = None, *, provider: str = "typesafe") -
                 "the AI_GATEWAY_API_KEY environment variable."
             )
         return key
+    if provider == "cloudflare":
+        key = os.environ.get("CLOUDFLARE_API_TOKEN")
+        if not key:
+            raise ValueError(
+                "Cloudflare API token is missing. Pass api_key=... or set the "
+                "CLOUDFLARE_API_TOKEN environment variable."
+            )
+        return key
     if provider != "typesafe":
         raise ValueError(
             f"Unknown provider {provider!r}; "
-            "expected 'typesafe', 'openrouter', or 'vercel'"
+            "expected 'typesafe', 'openrouter', 'vercel', or 'cloudflare'"
         )
     key = os.environ.get("TYPESAFE_API_KEY")
     if not key:
