@@ -16,7 +16,7 @@ dev = [
     "pytest",
     "pytest-asyncio",
     "pytest-mock",
-    "ruff==0.16.8",
+    "ruff==0.17.4",
 ]
 docs = [
     "mkdocs-material>=9.6",
